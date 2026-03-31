@@ -1,4 +1,3 @@
-// 試用版數據
 const categories = [
     { id: "fruits", name: "🍎 水果" },
     { id: "veggies", name: "🥦 蔬菜" },
@@ -6,68 +5,102 @@ const categories = [
 ];
 
 const vocabItems = [
-    { name: "蘋果", cat: "fruits", img: "https://cdn-icons-png.flaticon.com/512/415/415682.png" },
-    { name: "香蕉", cat: "fruits", img: "https://cdn-icons-png.flaticon.com/512/616/616442.png" },
-    { name: "西瓜", cat: "fruits", img: "https://cdn-icons-png.flaticon.com/512/2224/2224115.png" },
-    { name: "西蘭花", cat: "veggies", img: "https://cdn-icons-png.flaticon.com/512/2346/2346931.png" },
-    { name: "紅蘿蔔", cat: "veggies", img: "https://cdn-icons-png.flaticon.com/512/2224/2224131.png" },
-    { name: "粟米", cat: "veggies", img: "https://cdn-icons-png.flaticon.com/512/1206/1206109.png" },
-    { name: "梳化", cat: "furniture", img: "https://cdn-icons-png.flaticon.com/512/2550/2550346.png" },
-    { name: "床", cat: "furniture", img: "https://cdn-icons-png.flaticon.com/512/3015/3015509.png" },
-    { name: "衣櫃", cat: "furniture", img: "https://cdn-icons-png.flaticon.com/512/1041/1041935.png" }
+    { id: 1, name: "蘋果", cat: "fruits", img: "https://cdn-icons-png.flaticon.com/512/415/415682.png" },
+    { id: 2, name: "香蕉", cat: "fruits", img: "https://cdn-icons-png.flaticon.com/512/616/616442.png" },
+    { id: 3, name: "西瓜", cat: "fruits", img: "https://cdn-icons-png.flaticon.com/512/2224/2224115.png" },
+    { id: 4, name: "西蘭花", cat: "veggies", img: "https://cdn-icons-png.flaticon.com/512/2346/2346931.png" },
+    { id: 5, name: "紅蘿蔔", cat: "veggies", img: "https://cdn-icons-png.flaticon.com/512/2224/2224131.png" },
+    { id: 6, name: "梳化", cat: "furniture", img: "https://cdn-icons-png.flaticon.com/512/2550/2550346.png" },
+    { id: 7, name: "雪櫃", cat: "furniture", img: "https://cdn-icons-png.flaticon.com/512/2153/2153835.png" }
 ];
 
-// 渲染圖庫
+let selectedIds = new Set();
+let gameQueue = [];
+let currentIdx = 0;
+
 function renderBank() {
     const container = document.getElementById('bank-content');
     container.innerHTML = '';
-
     categories.forEach(cat => {
         const section = document.createElement('div');
         section.className = 'category-block';
-        
-        const title = document.createElement('div');
-        title.className = 'category-title';
-        title.innerText = cat.name;
-        section.appendChild(title);
+        section.innerHTML = `<div class="category-header" style="background:#FF9800; color:white; padding:10px 20px; border-radius:15px; display:inline-block; margin-bottom:15px; font-weight:bold;">${cat.name}</div>`;
         
         const grid = document.createElement('div');
         grid.className = 'grid';
         
-        const filtered = vocabItems.filter(item => item.cat === cat.id);
-        filtered.forEach(item => {
+        vocabItems.filter(i => i.cat === cat.id).forEach(item => {
             const card = document.createElement('div');
-            card.className = 'vocab-card';
+            card.className = `vocab-card ${selectedIds.has(item.id) ? 'selected' : ''}`;
             card.innerHTML = `<img src="${item.img}"><p>${item.name}</p>`;
-            card.onclick = () => startFlashcard(item.img);
+            card.onclick = () => toggleSelect(item.id, card);
             grid.appendChild(card);
         });
-        
         section.appendChild(grid);
         container.appendChild(section);
     });
 }
 
-// 切換至遊戲畫面
-function startFlashcard(imgSrc) {
-    document.getElementById('bank-screen').classList.add('hidden');
-    document.getElementById('game-screen').classList.remove('hidden');
-    document.getElementById('current-img').src = imgSrc;
-    // 重設所有翻轉卡片
-    document.querySelectorAll('.flip-card').forEach(c => c.classList.remove('flipped'));
-    window.scrollTo(0,0);
+function toggleSelect(id, element) {
+    if (selectedIds.has(id)) {
+        selectedIds.delete(id);
+        element.classList.remove('selected');
+    } else {
+        selectedIds.add(id);
+        element.classList.add('selected');
+    }
+    updateSelectionUI();
 }
 
-// 返回圖庫
-function goBackToBank() {
+function updateSelectionUI() {
+    const count = selectedIds.size;
+    document.getElementById('selected-count').innerText = count;
+    const btn = document.getElementById('start-btn');
+    if (count > 0) {
+        btn.classList.remove('disabled');
+        btn.disabled = false;
+    } else {
+        btn.classList.add('disabled');
+        btn.disabled = true;
+    }
+}
+
+function startSelectedGame() {
+    gameQueue = vocabItems.filter(item => selectedIds.has(item.id));
+    currentIdx = 0;
+    document.getElementById('bank-screen').classList.add('hidden');
+    document.getElementById('game-screen').classList.remove('hidden');
+    loadPhoto();
+}
+
+function loadPhoto() {
+    const item = gameQueue[currentIdx];
+    document.getElementById('current-img').src = item.img;
+    document.getElementById('game-progress').innerText = `${currentIdx + 1} / ${gameQueue.length}`;
+    document.querySelectorAll('.flip-card').forEach(c => c.classList.remove('flipped'));
+    
+    const nextBtn = document.getElementById('next-btn');
+    nextBtn.innerText = (currentIdx === gameQueue.length - 1) ? "原成挑戰 ✨" : "下一個 ➡️";
+}
+
+function nextPhoto() {
+    if (currentIdx < gameQueue.length - 1) {
+        currentIdx++;
+        loadPhoto();
+    } else {
+        exitGame();
+    }
+}
+
+function exitGame() {
     document.getElementById('game-screen').classList.add('hidden');
     document.getElementById('bank-screen').classList.remove('hidden');
 }
 
-// 縮放滑桿
+function toggleFlip(el) { el.classList.toggle('flipped'); }
+
 document.getElementById('zoom-slider').addEventListener('input', (e) => {
     document.documentElement.style.setProperty('--card-size', `${e.target.value}px`);
 });
 
-// 啟動
 renderBank();
