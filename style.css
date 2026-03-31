@@ -1,47 +1,37 @@
-:root { --card-size: 180px; }
-body { font-family: "Microsoft JhengHei", sans-serif; background: #FFFDF0; margin: 0; padding: 20px; text-align: center; }
+:root { --card-size: 160px; }
+body { font-family: sans-serif; background: #FFFDF0; margin: 0; padding: 20px; text-align: center; }
 .hidden { display: none; }
 
-/* Sticky 控制欄 */
 .sticky-controls {
-    position: sticky; top: 10px; z-index: 1000;
-    display: flex; flex-direction: column; align-items: center; gap: 10px;
-    background: rgba(255, 255, 255, 0.9); padding: 15px; border-radius: 30px;
-    box-shadow: 0 10px 30px rgba(0,0,0,0.1); margin-bottom: 30px; border: 3px solid #FFCC00;
+    position: sticky; top: 10px; z-index: 100; background: rgba(255,255,255,0.9);
+    padding: 15px; border-radius: 30px; border: 3px solid #FFCC00; margin-bottom: 20px;
 }
 
-#selection-bar { display: flex; align-items: center; gap: 20px; font-size: 1.2rem; }
-.nav-btn { padding: 12px 30px; background: #FF9800; color: white; border: none; border-radius: 50px; cursor: pointer; font-weight: bold; font-size: 1.2rem; box-shadow: 0 4px 0 #E65100; }
-.nav-btn.disabled { background: #CCC; box-shadow: 0 4px 0 #AAA; cursor: not-allowed; }
-
-/* 圖片卡片選擇狀態 */
-.category-block { margin-bottom: 50px; text-align: left; }
-.grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(var(--card-size), 1fr)); gap: 20px; }
-.vocab-card {
-    background: white; border: 4px solid #FFCC00; border-radius: 20px;
-    padding: 15px; cursor: pointer; position: relative; transition: 0.2s;
-}
+.category-block { text-align: left; margin-bottom: 30px; }
+.grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(var(--card-size), 1fr)); gap: 15px; }
+.vocab-card { background: white; border: 3px solid #FFCC00; border-radius: 15px; padding: 10px; cursor: pointer; transition: 0.2s; }
 .vocab-card.selected { border-color: #03A9F4; background: #E1F5FE; transform: scale(1.05); }
-.vocab-card.selected::after {
-    content: "✅"; position: absolute; top: 10px; right: 10px; font-size: 1.5rem;
-}
 .vocab-card img { width: 100%; aspect-ratio: 1/1; object-fit: contain; }
 
-/* 遊戲畫面 */
-.header-nav { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
-#game-progress { font-size: 1.5rem; font-weight: bold; color: #5D4037; }
-.game-container { display: flex; justify-content: center; align-items: center; gap: 40px; flex-wrap: wrap; }
-.display-box img { width: 400px; height: 400px; background: white; border-radius: 40px; border: 10px solid white; box-shadow: 0 10px 30px rgba(0,0,0,0.1); }
+.game-container { display: flex; justify-content: center; align-items: center; gap: 30px; flex-wrap: wrap; }
+.display-box img { width: 380px; height: 380px; background: white; border-radius: 30px; box-shadow: 0 10px 20px rgba(0,0,0,0.1); object-fit: contain; }
 
-/* 翻轉卡片樣式 */
 .hints-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
 .flip-card { width: 140px; height: 140px; perspective: 1000px; cursor: pointer; }
 .flip-card-inner { position: relative; width: 100%; height: 100%; transition: transform 0.6s; transform-style: preserve-3d; }
 .flip-card.flipped .flip-card-inner { transform: rotateY(180deg); }
-.card-front, .card-back { position: absolute; width: 100%; height: 100%; backface-visibility: hidden; border-radius: 20px; display: flex; flex-direction: column; align-items: center; justify-content: center; font-weight: bold; }
-.card-front { background: #EEE; font-size: 2.5rem; color: #999; border: 3px solid #DDD; }
-.card-back { transform: rotateY(180deg); color: white; }
-.cat-bg { background: #03A9F4; } .app-bg { background: #FFC107; color: #5D4037; } .feat-bg { background: #4CAF50; } .func-bg { background: #9C27B0; }
-.icon { font-size: 3.5rem; } .label { font-size: 1.3rem; }
+.card-front, .card-back { position: absolute; width: 100%; height: 100%; backface-visibility: hidden; border-radius: 20px; display: flex; flex-direction: column; align-items: center; justify-content: center; }
 
-.footer-nav { margin-top: 40px; }
+.card-front { background: #EEE; font-size: 2.5rem; color: #BBB; border: 3px solid #DDD; }
+.card-back { transform: rotateY(180deg); color: white; padding: 10px; }
+.hint-icon-img { width: 60%; height: 60%; object-fit: contain; margin-bottom: 5px; }
+.label { font-size: 1.1rem; font-weight: bold; }
+
+.cat-bg { background: #03A9F4; } 
+.feat-bg { background: #4CAF50; } 
+.loc-bg { background: #FF9800; }  
+.func-bg { background: #9C27B0; }
+
+.nav-btn { padding: 12px 25px; background: #FF9800; color: white; border: none; border-radius: 50px; cursor: pointer; font-weight: bold; box-shadow: 0 4px 0 #E65100; }
+.nav-btn.disabled { background: #CCC; box-shadow: 0 4px 0 #999; cursor: not-allowed; }
+.back-btn { padding: 10px 20px; background: #5D4037; color: white; border-radius: 50px; border: none; cursor: pointer; }
