@@ -1,70 +1,47 @@
-:root {
-    --card-size: 180px;
-}
-
-body { 
-    font-family: "Microsoft JhengHei", "微軟正黑體", sans-serif; 
-    background: #FFFDF0; margin: 0; padding: 20px; text-align: center; 
-}
-
+:root { --card-size: 180px; }
+body { font-family: "Microsoft JhengHei", sans-serif; background: #FFFDF0; margin: 0; padding: 20px; text-align: center; }
 .hidden { display: none; }
-.main-title { color: #5D4037; margin-bottom: 20px; }
 
-/* 縮放滑桿 */
-.controls-bar {
-    position: sticky; top: 10px; z-index: 100;
-    margin-bottom: 30px; display: flex; justify-content: center;
-}
-.zoom-container {
-    background: white; padding: 15px 30px; border-radius: 50px;
-    border: 3px solid #FFCC00; box-shadow: 0 5px 15px rgba(0,0,0,0.1);
-    display: flex; align-items: center; gap: 15px; font-weight: bold;
+/* Sticky 控制欄 */
+.sticky-controls {
+    position: sticky; top: 10px; z-index: 1000;
+    display: flex; flex-direction: column; align-items: center; gap: 10px;
+    background: rgba(255, 255, 255, 0.9); padding: 15px; border-radius: 30px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.1); margin-bottom: 30px; border: 3px solid #FFCC00;
 }
 
-/* 類別與網格 */
+#selection-bar { display: flex; align-items: center; gap: 20px; font-size: 1.2rem; }
+.nav-btn { padding: 12px 30px; background: #FF9800; color: white; border: none; border-radius: 50px; cursor: pointer; font-weight: bold; font-size: 1.2rem; box-shadow: 0 4px 0 #E65100; }
+.nav-btn.disabled { background: #CCC; box-shadow: 0 4px 0 #AAA; cursor: not-allowed; }
+
+/* 圖片卡片選擇狀態 */
 .category-block { margin-bottom: 50px; text-align: left; }
-.category-title { 
-    background: #FF9800; color: white; padding: 10px 25px; 
-    border-radius: 15px; font-size: 1.8rem; display: inline-block;
-    margin-bottom: 20px; box-shadow: 4px 4px 0 #E65100;
-}
-.grid { 
-    display: grid; grid-template-columns: repeat(auto-fill, minmax(var(--card-size), 1fr)); 
-    gap: 20px; 
-}
-
-/* 詞彙卡片 */
+.grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(var(--card-size), 1fr)); gap: 20px; }
 .vocab-card {
     background: white; border: 4px solid #FFCC00; border-radius: 20px;
-    padding: 15px; cursor: pointer; box-shadow: 0 5px 0 #E6B800;
+    padding: 15px; cursor: pointer; position: relative; transition: 0.2s;
+}
+.vocab-card.selected { border-color: #03A9F4; background: #E1F5FE; transform: scale(1.05); }
+.vocab-card.selected::after {
+    content: "✅"; position: absolute; top: 10px; right: 10px; font-size: 1.5rem;
 }
 .vocab-card img { width: 100%; aspect-ratio: 1/1; object-fit: contain; }
-.vocab-card p { font-size: 1.3rem; font-weight: bold; margin-top: 10px; }
 
 /* 遊戲畫面 */
-.header-nav { text-align: left; margin-bottom: 20px; }
-.back-btn { padding: 12px 25px; background: #5D4037; color: white; border: none; border-radius: 50px; cursor: pointer; }
-
+.header-nav { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
+#game-progress { font-size: 1.5rem; font-weight: bold; color: #5D4037; }
 .game-container { display: flex; justify-content: center; align-items: center; gap: 40px; flex-wrap: wrap; }
-.display-box img { width: 450px; height: 450px; background: white; border: 10px solid white; border-radius: 40px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); }
+.display-box img { width: 400px; height: 400px; background: white; border-radius: 40px; border: 10px solid white; box-shadow: 0 10px 30px rgba(0,0,0,0.1); }
 
-/* 提示卡翻轉效果 */
-.hints-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
-.flip-card { width: 150px; height: 150px; perspective: 1000px; cursor: pointer; }
+/* 翻轉卡片樣式 */
+.hints-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
+.flip-card { width: 140px; height: 140px; perspective: 1000px; cursor: pointer; }
 .flip-card-inner { position: relative; width: 100%; height: 100%; transition: transform 0.6s; transform-style: preserve-3d; }
 .flip-card.flipped .flip-card-inner { transform: rotateY(180deg); }
-
-.card-front, .card-back { 
-    position: absolute; width: 100%; height: 100%; backface-visibility: hidden; 
-    border-radius: 25px; display: flex; flex-direction: column; align-items: center; justify-content: center; 
-}
-.card-front { background: #EEE; font-size: 3rem; color: #999; border: 4px solid #DDD; }
+.card-front, .card-back { position: absolute; width: 100%; height: 100%; backface-visibility: hidden; border-radius: 20px; display: flex; flex-direction: column; align-items: center; justify-content: center; font-weight: bold; }
+.card-front { background: #EEE; font-size: 2.5rem; color: #999; border: 3px solid #DDD; }
 .card-back { transform: rotateY(180deg); color: white; }
+.cat-bg { background: #03A9F4; } .app-bg { background: #FFC107; color: #5D4037; } .feat-bg { background: #4CAF50; } .func-bg { background: #9C27B0; }
+.icon { font-size: 3.5rem; } .label { font-size: 1.3rem; }
 
-.cat-bg { background: #03A9F4; }
-.app-bg { background: #FFC107; color: #5D4037; }
-.feat-bg { background: #4CAF50; }
-.func-bg { background: #9C27B0; }
-
-.icon { font-size: 4rem; }
-.label { font-size: 1.5rem; font-weight: bold; }
+.footer-nav { margin-top: 40px; }
