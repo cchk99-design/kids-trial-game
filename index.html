@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="zh-Hant-HK">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>香港幼兒識字遊戲 (試用版)</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <div id="bank-screen">
+        <h1 class="main-title">小朋友識字王 (試用版)</h1>
+        
+        <div class="controls-bar">
+            <div class="zoom-container">
+                <span>🔍 縮小</span>
+                <input type="range" id="zoom-slider" min="100" max="300" value="180">
+                <span>放大</span>
+            </div>
+        </div>
+
+        <div id="bank-content"></div>
+    </div>
+
+    <div id="game-screen" class="hidden">
+        <div class="header-nav">
+            <button class="back-btn" onclick="goBackToBank()">⬅️ 返去揀過</button>
+        </div>
+        
+        <div class="game-container">
+            <div class="display-box">
+                <img id="current-img" src="" alt="圖片">
+            </div>
+            
+            <div class="hints-grid">
+                <div class="flip-card" onclick="this.classList.toggle('flipped')">
+                    <div class="flip-card-inner">
+                        <div class="card-front">？</div>
+                        <div class="card-back cat-bg">
+                            <span class="icon">📂</span>
+                            <span class="label">類別</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="flip-card" onclick="this.classList.toggle('flipped')">
+                    <div class="flip-card-inner">
+                        <div class="card-front">？</div>
+                        <div class="card-back app-bg">
+                            <span class="icon">🎨</span>
+                            <span class="label">外型</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="flip-card" onclick="this.classList.toggle('flipped')">
+                    <div class="flip-card-inner">
+                        <div class="card-front">？</div>
+                        <div class="card-back feat-bg">
+                            <span class="icon">🌟</span>
+                            <span class="label">特徵</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="flip-card" onclick="this.classList.toggle('flipped')">
+                    <div class="flip-card-inner">
+                        <div class="card-front">？</div>
+                        <div class="card-back func-bg">
+                            <span class="icon">🛠️</span>
+                            <span class="label">用途</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
