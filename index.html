@@ -3,19 +3,23 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>香港幼兒識字遊戲 (試用版)</title>
+    <title>香港幼兒識字遊戲 - 多選挑戰版</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
     <div id="bank-screen">
-        <h1 class="main-title">小朋友識字王 (試用版)</h1>
+        <h1 class="main-title">🌟 揀你想挑戰嘅字 🌟</h1>
         
-        <div class="controls-bar">
+        <div class="sticky-controls">
             <div class="zoom-container">
                 <span>🔍 縮小</span>
                 <input type="range" id="zoom-slider" min="100" max="300" value="180">
                 <span>放大</span>
+            </div>
+            <div id="selection-bar">
+                <span>已揀選：<strong id="selected-count">0</strong> 張</span>
+                <button id="start-btn" class="nav-btn disabled" onclick="startSelectedGame()" disabled>開始遊戲 ▶️</button>
             </div>
         </div>
 
@@ -24,7 +28,8 @@
 
     <div id="game-screen" class="hidden">
         <div class="header-nav">
-            <button class="back-btn" onclick="goBackToBank()">⬅️ 返去揀過</button>
+            <button class="back-btn" onclick="exitGame()">⬅️ 返回重揀</button>
+            <div id="game-progress">1 / 5</div>
         </div>
         
         <div class="game-container">
@@ -33,43 +38,35 @@
             </div>
             
             <div class="hints-grid">
-                <div class="flip-card" onclick="this.classList.toggle('flipped')">
+                <div class="flip-card" onclick="toggleFlip(this)">
                     <div class="flip-card-inner">
                         <div class="card-front">？</div>
-                        <div class="card-back cat-bg">
-                            <span class="icon">📂</span>
-                            <span class="label">類別</span>
-                        </div>
+                        <div class="card-back cat-bg"><span class="icon">📂</span><span class="label">類別</span></div>
                     </div>
                 </div>
-                <div class="flip-card" onclick="this.classList.toggle('flipped')">
+                <div class="flip-card" onclick="toggleFlip(this)">
                     <div class="flip-card-inner">
                         <div class="card-front">？</div>
-                        <div class="card-back app-bg">
-                            <span class="icon">🎨</span>
-                            <span class="label">外型</span>
-                        </div>
+                        <div class="card-back app-bg"><span class="icon">🎨</span><span class="label">外型</span></div>
                     </div>
                 </div>
-                <div class="flip-card" onclick="this.classList.toggle('flipped')">
+                <div class="flip-card" onclick="toggleFlip(this)">
                     <div class="flip-card-inner">
                         <div class="card-front">？</div>
-                        <div class="card-back feat-bg">
-                            <span class="icon">🌟</span>
-                            <span class="label">特徵</span>
-                        </div>
+                        <div class="card-back feat-bg"><span class="icon">🌟</span><span class="label">特徵</span></div>
                     </div>
                 </div>
-                <div class="flip-card" onclick="this.classList.toggle('flipped')">
+                <div class="flip-card" onclick="toggleFlip(this)">
                     <div class="flip-card-inner">
                         <div class="card-front">？</div>
-                        <div class="card-back func-bg">
-                            <span class="icon">🛠️</span>
-                            <span class="label">用途</span>
-                        </div>
+                        <div class="card-back func-bg"><span class="icon">🛠️</span><span class="label">用途</span></div>
                     </div>
                 </div>
             </div>
+        </div>
+
+        <div class="footer-nav">
+            <button id="next-btn" class="nav-btn" onclick="nextPhoto()">下一個 ➡️</button>
         </div>
     </div>
 
