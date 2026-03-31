@@ -4,16 +4,24 @@ const categories = [
     { id: "furniture", name: "🛋️ 家具" }
 ];
 
-const vocabItems = [
-    { id: 1, name: "蘋果", cat: "fruits", img: "https://cdn-icons-png.flaticon.com/512/415/415682.png" },
-    { id: 2, name: "香蕉", cat: "fruits", img: "https://cdn-icons-png.flaticon.com/512/616/616442.png" },
-    { id: 3, name: "西瓜", cat: "fruits", img: "https://cdn-icons-png.flaticon.com/512/2224/2224115.png" },
-    { id: 4, name: "西蘭花", cat: "veggies", img: "https://cdn-icons-png.flaticon.com/512/2346/2346931.png" },
-    { id: 5, name: "紅蘿蔔", cat: "veggies", img: "https://cdn-icons-png.flaticon.com/512/2224/2224131.png" },
-    { id: 6, name: "梳化", cat: "furniture", img: "https://cdn-icons-png.flaticon.com/512/2550/2550346.png" },
-    { id: 7, name: "雪櫃", cat: "furniture", img: "https://cdn-icons-png.flaticon.com/512/2153/2153835.png" }
-];
+// 測試版：假設每個資料夾有 3 張 PNG 圖
+const categoryCounts = { fruits: 3, veggies: 3, furniture: 3 };
 
+const vocabItems = [];
+let globalId = 1;
+
+for (const [catId, count] of Object.entries(categoryCounts)) {
+    for (let i = 1; i <= count; i++) {
+        vocabItems.push({
+            id: globalId++,
+            cat: catId,
+            // 關鍵修改：副檔名改為 .png
+            img: `images/vocab/${catId} (${i}).png` 
+        });
+    }
+}
+
+// --- 遊戲邏輯控制 ---
 let selectedIds = new Set();
 let gameQueue = [];
 let currentIdx = 0;
@@ -24,16 +32,24 @@ function renderBank() {
     categories.forEach(cat => {
         const section = document.createElement('div');
         section.className = 'category-block';
-        section.innerHTML = `<div class="category-header" style="background:#FF9800; color:white; padding:10px 20px; border-radius:15px; display:inline-block; margin-bottom:15px; font-weight:bold;">${cat.name}</div>`;
-        
+        section.innerHTML = `<h3>${cat.name}</h3>`;
         const grid = document.createElement('div');
         grid.className = 'grid';
         
         vocabItems.filter(i => i.cat === cat.id).forEach(item => {
             const card = document.createElement('div');
             card.className = `vocab-card ${selectedIds.has(item.id) ? 'selected' : ''}`;
-            card.innerHTML = `<img src="${item.img}"><p>${item.name}</p>`;
-            card.onclick = () => toggleSelect(item.id, card);
+            card.innerHTML = `<img src="${item.img}">`;
+            card.onclick = () => {
+                if(selectedIds.has(item.id)) {
+                    selectedIds.delete(item.id);
+                    card.classList.remove('selected');
+                } else {
+                    selectedIds.add(item.id);
+                    card.classList.add('selected');
+                }
+                updateUI();
+            };
             grid.appendChild(card);
         });
         section.appendChild(grid);
@@ -41,28 +57,11 @@ function renderBank() {
     });
 }
 
-function toggleSelect(id, element) {
-    if (selectedIds.has(id)) {
-        selectedIds.delete(id);
-        element.classList.remove('selected');
-    } else {
-        selectedIds.add(id);
-        element.classList.add('selected');
-    }
-    updateSelectionUI();
-}
-
-function updateSelectionUI() {
-    const count = selectedIds.size;
-    document.getElementById('selected-count').innerText = count;
+function updateUI() {
+    document.getElementById('selected-count').innerText = selectedIds.size;
     const btn = document.getElementById('start-btn');
-    if (count > 0) {
-        btn.classList.remove('disabled');
-        btn.disabled = false;
-    } else {
-        btn.classList.add('disabled');
-        btn.disabled = true;
-    }
+    btn.disabled = selectedIds.size === 0;
+    btn.className = `nav-btn ${selectedIds.size === 0 ? 'disabled' : ''}`;
 }
 
 function startSelectedGame() {
@@ -70,23 +69,18 @@ function startSelectedGame() {
     currentIdx = 0;
     document.getElementById('bank-screen').classList.add('hidden');
     document.getElementById('game-screen').classList.remove('hidden');
-    loadPhoto();
+    loadStage();
 }
 
-function loadPhoto() {
-    const item = gameQueue[currentIdx];
-    document.getElementById('current-img').src = item.img;
+function loadStage() {
+    document.getElementById('current-img').src = gameQueue[currentIdx].img;
     document.getElementById('game-progress').innerText = `${currentIdx + 1} / ${gameQueue.length}`;
     document.querySelectorAll('.flip-card').forEach(c => c.classList.remove('flipped'));
-    
-    const nextBtn = document.getElementById('next-btn');
-    nextBtn.innerText = (currentIdx === gameQueue.length - 1) ? "原成挑戰 ✨" : "下一個 ➡️";
 }
 
 function nextPhoto() {
     if (currentIdx < gameQueue.length - 1) {
-        currentIdx++;
-        loadPhoto();
+        currentIdx++; loadStage();
     } else {
         exitGame();
     }
@@ -95,12 +89,9 @@ function nextPhoto() {
 function exitGame() {
     document.getElementById('game-screen').classList.add('hidden');
     document.getElementById('bank-screen').classList.remove('hidden');
+    window.scrollTo(0,0);
 }
 
 function toggleFlip(el) { el.classList.toggle('flipped'); }
-
-document.getElementById('zoom-slider').addEventListener('input', (e) => {
-    document.documentElement.style.setProperty('--card-size', `${e.target.value}px`);
-});
 
 renderBank();
